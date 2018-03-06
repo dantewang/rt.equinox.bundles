@@ -128,6 +128,8 @@ public class DispatchTargets {
 		finally {
 			httpRuntimeRequest.pop();
 
+			((HttpSessionAdaptor)httpRuntimeRequest.getSession()).touch();
+
 			setter.close();
 		}
 	}

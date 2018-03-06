@@ -253,8 +253,17 @@ public class HttpSessionAdaptor implements HttpSession, Serializable {
 	}
 
 	public boolean isNew() {
-		// Not sure this can be done per context helper
-		return session.isNew();
+		Map<String, HttpSessionAdaptor> activeSessions = controller.getActiveSessions();
+
+		if (!activeSessions.containsKey(session.getId())) {
+			throw new IllegalStateException();
+		}
+
+		if (session.isNew()) {
+			return true;
+		}
+
+		return this.isNew;
 	}
 
 	@Override
@@ -269,8 +278,14 @@ public class HttpSessionAdaptor implements HttpSession, Serializable {
 
 		return value;
 	}
+	
+	public void touch() {
+		this.isNew = false;
+	}
 
 	private static final String SIMPLE_NAME =
 		HttpSessionAdaptor.class.getSimpleName();
+	
+	private boolean isNew = true;
 
 }
